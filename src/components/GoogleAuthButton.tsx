@@ -13,7 +13,7 @@ const GoogleAuthButton = ({mode}) => {
         onSuccess: async (tokenResponse) => {
             setLoading(true)
           // Send the access token to the Django endpoint created in Step 3
-          const res = await axios.post('http://localhost:8000/api/auth/google/', {
+          const res = await axios.post(`${import.meta.env.VITE_BASE_API_URL}auth/google/`, {
             access_token: tokenResponse.access_token,
           });
           

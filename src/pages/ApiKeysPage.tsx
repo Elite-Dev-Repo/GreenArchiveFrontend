@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Loader2, Plus, Key } from "lucide-react";
+import { Loader2, Plus, Key, Copy, CheckCircle2 } from "lucide-react";
 import { fetchApiKeys, createApiKey, type ApiKey } from "../lib/data";
+
+interface CreatedKey {
+  name: string;
+  key: string;
+  created: string;
+}
 
 export default function ApiKeysPage() {
   const [keys, setKeys] = useState<ApiKey[]>([]);
@@ -9,6 +15,8 @@ export default function ApiKeysPage() {
   const [generating, setGenerating] = useState(false);
   const [newName, setNewName] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [createdKey, setCreatedKey] = useState<CreatedKey | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -30,17 +38,24 @@ export default function ApiKeysPage() {
       setKeys((prev) => [data as ApiKey, ...prev]);
       setShowModal(false);
       setNewName("");
-      if ("key" in data && data.key) {
-        navigator.clipboard.writeText(data.key);
-        toast.success("API key created! Copied to clipboard.");
-      } else {
-        toast.success("API key created!");
-      }
+      setCreatedKey({ name: data.name, key: data.key!, created: (data as Record<string, string>).created });
     } catch {
       toast.error("Failed to create API key");
     } finally {
       setGenerating(false);
     }
+  };
+
+  const copyKey = async () => {
+    if (!createdKey) return;
+    await navigator.clipboard.writeText(createdKey.key);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const dismissKey = () => {
+    setCreatedKey(null);
+    setCopied(false);
   };
 
   if (loading) {
@@ -120,6 +135,29 @@ export default function ApiKeysPage() {
               <button onClick={generate} disabled={generating || !newName.trim()} className="flex-1 pill-btn px-4 py-2.5 text-sm flex items-center justify-center gap-2 disabled:opacity-50">
                 {generating ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
                 Generate
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {createdKey && (
+        <div className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-cream border-2 border-ink/10 rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <h2 className="font-black-condensed text-2xl text-ink">API Key Created</h2>
+            <p className="font-body text-sm text-red-500 font-semibold mt-2">
+              This key will only be shown once. Save it somewhere safe!
+            </p>
+            <div className="mt-4 p-4 bg-white border-2 border-lime/40 rounded-xl break-all font-mono text-sm text-ink select-all">
+              {createdKey.key}
+            </div>
+            <div className="flex items-center gap-3 mt-4">
+              <button onClick={dismissKey} className="flex-1 font-body font-semibold text-muted px-4 py-2.5 border-2 border-ink/10 rounded-full hover:bg-ink/5 transition-colors">
+                Done
+              </button>
+              <button onClick={copyKey} className="flex-1 pill-btn px-4 py-2.5 text-sm flex items-center justify-center gap-2">
+                {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                {copied ? "Copied!" : "Copy Key"}
               </button>
             </div>
           </div>
