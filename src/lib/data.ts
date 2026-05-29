@@ -24,6 +24,7 @@ export interface AuthResponse {
 }
 
 export interface ApiKey {
+  id: number;
   name: string;
   user: number;
   created_at: string;
@@ -63,6 +64,10 @@ export async function createApiKey(name: string) {
     user_id: getUserId(),
   });
   return data;
+}
+
+export async function deleteApiKey(pk: number) {
+  await api.delete(`/apikeys/delete-api-key/${pk}/`);
 }
 
 

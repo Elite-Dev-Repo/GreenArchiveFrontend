@@ -49,8 +49,22 @@ const SECTIONS: Section[] = [
     endpoints: [
       {
         method: "GET", path: "/questions/?category=&difficulty=", auth: "Api-Key <key>",
-        desc: "List questions with optional category and difficulty filters.",
-        resBody: JSON.stringify([{ id: 1, question: "What is...?", category: "science", difficulty: "easy" }], null, 2),
+        desc: "List questions. Filter by category (history, politics, sports, culture, government, current_affairs) and/or difficulty (easy, medium, hard). Both parameters are optional and can be combined — e.g. /questions/?category=history&difficulty=hard.",
+        resBody: JSON.stringify([
+          {
+            id: 1,
+            question: "What is the primary greenhouse gas responsible for global warming?",
+            option_a: "Oxygen",
+            option_b: "Carbon dioxide",
+            option_c: "Nitrogen",
+            option_d: "Hydrogen",
+            correct_answer: "B",
+            category: "current_affairs",
+            difficulty: "easy",
+            source: "EPA.gov",
+            created_at: "2026-05-29T16:10:19.716967Z"
+          }
+        ], null, 2),
         tryIt: async () => {
           const key = prompt("Enter your API key:");
           if (!key) throw new Error("API key required");
@@ -60,40 +74,23 @@ const SECTIONS: Section[] = [
       },
     ],
   },
-  {
-    id: "news",
-    title: "News",
-    endpoints: [
-      {
-        method: "GET", path: "/news/", auth: "Api-Key <key>",
-        desc: "List environmental news articles.",
-        resBody: JSON.stringify([{ id: 1, title: "...", url: "...", source: "..." }], null, 2),
-        tryIt: async () => {
-          const key = prompt("Enter your API key:");
-          if (!key) throw new Error("API key required");
-          const { data } = await api.get("/news/", { headers: { Authorization: `Api-Key ${key}` } });
-          return data;
-        },
-      },
-    ],
-  },
-  {
-    id: "api-keys",
-    title: "API Keys",
-    endpoints: [
-      {
-        method: "GET", path: "/apikeys/create-api-key/", auth: "Bearer <jwt>",
-        desc: "List all API keys for the authenticated user.",
-        resBody: JSON.stringify([{ name: "My Key", user: 1, created_at: "2025-01-01" }], null, 2),
-      },
-      {
-        method: "POST", path: "/apikeys/create-api-key/", auth: "Bearer <jwt>",
-        desc: "Create a new API key.",
-        reqBody: JSON.stringify({ name: "Production" }, null, 2),
-        resBody: JSON.stringify({ name: "Production", user: 1, key: "ga_...", created_at: "2025-01-01" }, null, 2),
-      },
-    ],
-  },
+  // {
+  //   id: "news",
+  //   title: "News",
+  //   endpoints: [
+  //     {
+  //       method: "GET", path: "/news/", auth: "Api-Key <key>",
+  //       desc: "List environmental news articles.",
+  //       resBody: JSON.stringify([{ id: 1, title: "...", url: "...", source: "..." }], null, 2),
+  //       tryIt: async () => {
+  //         const key = prompt("Enter your API key:");
+  //         if (!key) throw new Error("API key required");
+  //         const { data } = await api.get("/news/", { headers: { Authorization: `Api-Key ${key}` } });
+  //         return data;
+  //       },
+  //     },
+  //   ],
+  // },
 ];
 
 function MethodBadge({ method }: { method: "GET" | "POST" }) {
@@ -188,10 +185,12 @@ export default function DocsPage() {
             <h2 className="font-black-condensed text-display text-ink mb-2">{section.title}</h2>
             <p className="font-body text-muted mb-8">
               {section.id === "authentication" && "How to authenticate with the GreenArchive API."}
-              {section.id === "questions" && "Retrieve environmental questions with optional filters."}
+              {section.id === "questions" && "Retrieve environmental questions with optional category and difficulty filters."}
               {section.id === "news" && "Fetch the latest environmental news articles."}
               {section.id === "api-keys" && "Manage your API keys programmatically."}
             </p>
+
+
 
             <div className="space-y-8">
               {section.endpoints.map((ep, i) => {

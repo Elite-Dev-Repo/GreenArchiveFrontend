@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Loader2, Plus, Key, Copy, CheckCircle2 } from "lucide-react";
-import { fetchApiKeys, createApiKey, type ApiKey } from "../lib/data";
+import { Loader2, Plus, Key, Copy, CheckCircle2, Trash2 } from "lucide-react";
+import { fetchApiKeys, createApiKey, deleteApiKey, type ApiKey } from "../lib/data";
 
 interface CreatedKey {
   name: string;
@@ -17,6 +17,8 @@ export default function ApiKeysPage() {
   const [showModal, setShowModal] = useState(false);
   const [createdKey, setCreatedKey] = useState<CreatedKey | null>(null);
   const [copied, setCopied] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ApiKey | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -56,6 +58,22 @@ export default function ApiKeysPage() {
   const dismissKey = () => {
     setCreatedKey(null);
     setCopied(false);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteApiKey(deleteTarget.id);
+      console.log(deleteTarget);
+      setKeys((prev) => prev.filter((k) => k.id !== deleteTarget.id));
+      setDeleteTarget(null);
+      toast.success("API key deleted");
+    } catch {
+      toast.error("Failed to delete API key");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -99,14 +117,22 @@ export default function ApiKeysPage() {
               <tr className="border-b-2 border-ink/10">
                 <th className="font-body text-xs font-bold text-muted uppercase tracking-wider text-left py-3 px-4">Name</th>
                 <th className="font-body text-xs font-bold text-muted uppercase tracking-wider text-left py-3 px-4 hidden md:table-cell">Created At</th>
+                <th className="font-body text-xs font-bold text-muted uppercase tracking-wider text-right py-3 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {keys.map((k, i) => (
-                <tr key={i} className="border-b border-ink/5 hover:bg-lime/5 transition-colors">
+              {keys.map((k) => (
+                <tr key={k.id} className="border-b border-ink/5 hover:bg-lime/5 transition-colors">
                   <td className="py-4 px-4 font-body font-semibold text-ink">{k.name}</td>
                   <td className="py-4 px-4 font-body text-sm text-muted hidden md:table-cell">
                     {new Date(k.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="py-4 px-4 text-right">
+                    <button onClick={() => {console.log(k)
+                       setDeleteTarget(k)
+                     } } className="text-muted hover:text-red-500 transition-colors p-1">
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -158,6 +184,26 @@ export default function ApiKeysPage() {
               <button onClick={copyKey} className="flex-1 pill-btn px-4 py-2.5 text-sm flex items-center justify-center gap-2">
                 {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
                 {copied ? "Copied!" : "Copy Key"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-cream border-2 border-ink/10 rounded-2xl p-6 w-full max-w-sm shadow-xl">
+            <h2 className="font-black-condensed text-2xl text-ink">Delete API Key</h2>
+            <p className="font-body text-sm text-muted mt-2">
+              Are you sure you want to delete <span className="font-semibold text-ink">{deleteTarget.name}</span>? This action cannot be undone.
+            </p>
+            <div className="flex items-center gap-3 mt-6">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 font-body font-semibold text-muted px-4 py-2.5 border-2 border-ink/10 rounded-full hover:bg-ink/5 transition-colors">
+                Cancel
+              </button>
+              <button onClick={handleDelete} disabled={deleting} className="flex-1 font-body font-semibold text-white bg-red-500 px-4 py-2.5 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                {deleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                Delete
               </button>
             </div>
           </div>

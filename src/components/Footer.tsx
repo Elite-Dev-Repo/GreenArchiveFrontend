@@ -50,10 +50,10 @@ export default function Footer() {
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-shrink-0">
               <div className="flex items-center gap-2">
-                <button onClick={() => navigate('/auth')} className="bg-ink text-cream rounded-full px-7 py-4 font-body text-sm font-bold hover:bg-ink/80 transition-colors duration-200">
+                <button onClick={() => navigate('/apikeys')} className="bg-ink text-cream rounded-full px-7 py-4 font-body text-sm font-bold hover:bg-ink/80 transition-colors duration-200">
                   Get your API key
                 </button>
-                <button onClick={() => navigate('/auth')} className="w-14 h-14 bg-ink text-cream rounded-full flex items-center justify-center hover:bg-ink/80 transition-colors duration-200">
+                <button onClick={() => navigate('/apikeys')} className="w-14 h-14 bg-ink text-cream rounded-full flex items-center justify-center hover:bg-ink/80 transition-colors duration-200">
                   <ArrowUpRight size={20} />
                 </button>
               </div>
