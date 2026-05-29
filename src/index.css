@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #eef6e4;
+    color: #111a0e;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: #a8e63d; color: #111a0e; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #eef6e4; }
+  ::-webkit-scrollbar-thumb { background: #a8e63d; border-radius: 2px; }
+}
+
+@layer utilities {
+  .font-black-condensed {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  .pill-btn {
+    @apply bg-lime text-ink font-body font-bold rounded-full transition-all duration-200;
+  }
+  .pill-btn:hover {
+    @apply bg-lime-mid scale-[1.03];
+  }
+  .arrow-btn {
+    @apply bg-lime text-ink rounded-full flex items-center justify-center transition-all duration-200;
+  }
+  .arrow-btn:hover {
+    @apply bg-lime-mid scale-[1.05];
+  }
+  .card-outline {
+    @apply bg-cream border-2 border-ink/10 rounded-2xl;
+  }
+  .card-lime {
+    @apply bg-lime rounded-2xl;
+  }
+  .section-label {
+    @apply font-body text-xs font-bold tracking-[0.18em] uppercase text-muted;
+  }
+}
