@@ -12,8 +12,11 @@ const GoogleAuthButton = ({mode}: Props)  => {
     const [loading, setLoading]  = useState(false)
     const handleGoogleLogin = useGoogleLogin({
         
-       
         onSuccess: async (tokenResponse) => {
+          setTimeout(() => {
+            setLoading(false)
+            toast.error('Something went wrong! go to Sign Up.')
+          }, 5000);
             setLoading(true)
           // Send the access token to the Django endpoint created in Step 3
           const res = await axios.post(`${import.meta.env.VITE_BASE_API_URL}auth/google/`, {
@@ -26,6 +29,7 @@ const GoogleAuthButton = ({mode}: Props)  => {
           toast.success(mode === "login" ? "Welcome back!" : "Account created!");
           window.location.href = "/apikeys";
         },
+    
       });
   return (
     <button
