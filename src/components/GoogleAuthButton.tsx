@@ -4,8 +4,11 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+interface Props {
+  mode: "login" | "signup";
+}
 
-const GoogleAuthButton = ({mode}) => {
+const GoogleAuthButton = ({mode}: Props)  => {
     const [loading, setLoading]  = useState(false)
     const handleGoogleLogin = useGoogleLogin({
         

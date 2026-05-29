@@ -40,7 +40,7 @@ export default function ApiKeysPage() {
       setKeys((prev) => [data as ApiKey, ...prev]);
       setShowModal(false);
       setNewName("");
-      setCreatedKey({ name: data.name, key: data.key!, created: (data as Record<string, string>).created });
+      setCreatedKey({ name: data.name, key: data.key!, created: (data as never as { created: string }).created });
     } catch {
       toast.error("Failed to create API key");
     } finally {
