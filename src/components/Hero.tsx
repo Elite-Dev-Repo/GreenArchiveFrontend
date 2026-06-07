@@ -14,15 +14,7 @@ export default function Hero() {
       {/* Floating accent shapes */}
      
      
-      <div className="hidden lg:block absolute bottom-[26%] left-[5%] animate-float-c">
-        <div className="bg-ink text-cream rounded-2xl p-4 shadow-xl">
-          <div className="font-body text-[11px] font-bold text-lime/70 uppercase tracking-widest mb-1">Weekly Update</div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-            <span className="font-body text-sm font-bold">New questions</span>
-          </div>
-        </div>
-      </div>
+      
       <div className="hidden lg:block absolute bottom-[24%] right-[6%] animate-float-a" style={{ animationDelay: '2s' }}>
       </div>
 
@@ -70,7 +62,7 @@ export default function Hero() {
         <div className="flex gap-10 justify-center mt-16 flex-wrap">
           {[
             { val: '50K+', label: 'Questions' },
-            { val: '9', label: 'Categories' },
+            { val: '7', label: 'Categories' },
             { val: '90%', label: 'Accuracy' },
             { val: 'Weekly', label: 'AI Updates' },
           ].map(s => (
